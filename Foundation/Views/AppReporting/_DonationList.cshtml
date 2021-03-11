@@ -1,0 +1,91 @@
+﻿@{
+    double Balance = 0;
+    Layout = null;
+}
+@if (TempData["Donations"] != null)
+{
+    @*<div class="panel-hdr">
+            <div class="panel-toolbar">
+                <button type="button" class="btn btn-outline-success btn-sm" onclick="print1()"><i class="fal fa-print"></i> Print Report</button>
+            </div>
+        </div>*@
+    <div class="panel-container show">
+        <div class="panel-content">
+            <table id="dt-basic-example" class="table table-responsive-lg table-bordered table-hover table-striped w-100">
+                <thead>
+                    <tr>
+                        <th>Donor</th>
+                        <th>Donation Type</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var i in (List<Foundation.Models.Donation>)TempData["Donations"])
+                    {
+                        <tr>
+                            <td>@i.Person.firstName  @i.Person.lastName</td>
+                            <td>@i.Donation_Type.dtName </td>
+                            <td>@i.dAmount.ToString("#,##0.00")</td>
+                            <td>@i.CreatedDate.ToString("dd-MMM-yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+
+
+<div hidden id="Print">
+    @if (TempData["Revenue"] != null)
+    {
+        <div class="panel-hdr">
+            <h2>DTS Income-Revenue Report</h2>
+        </div>
+        <div class="panel-container show">
+            <div class="panel-content">
+                <table id="dt-basic-example" class="table table-responsive-lg table-bordered table-hover table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Income-Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var i in (List<Foundation.Models.Donation>)TempData["Revenue"])
+                        {
+                            <tr>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><h5><b>Total</b></h5></td>
+                            <td><h5><b>@Convert.ToDecimal(Balance).ToString("#,##0.00")</b></h5></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    function print1() {
+        var prtContent = document.getElementById('Print');
+        var mywindow = window.open('', '', 'height=700,width=900');
+        mywindow.document.write('<html><head>');
+        mywindow.document.write('<link href = "/css/vendors.bundle.css" rel = "stylesheet" />')
+        mywindow.document.write('</head><body>');
+        mywindow.document.write(prtContent.innerHTML);
+        mywindow.document.write('</body></html>');
+        mywindow.document.close();
+        setTimeout(function () {
+            mywindow.print();
+            mywindow.close();
+        }, 500)
+
+    }
+</script>

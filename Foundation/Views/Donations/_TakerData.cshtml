@@ -1,0 +1,65 @@
+﻿
+
+<table id="dt-basic-example" class="table table-responsive-lg table-bordered table-hover table-striped w-100">
+    <thead>
+        <tr>
+            <th>Donation Type</th>
+            <th>Donor</th>
+            <th>Donor Number</th>
+            <th>Amount</th>
+            <th>Donation Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in (List<Foundation.Models.Donation>)TempData["Donation"])
+        {
+            <tr>
+                <td>@i.Donation_Type.dtName</td>
+                <td>@i.Person.firstName @i.Person.lastName</td>
+                <td>@i.dNumber</td>
+                <td>@i.dAmount</td>
+                <td>
+                    @i.CreatedDate.ToString("dd-MMM-yyyy")
+                </td>
+                <td>
+                    <div class="d-flex demo">
+
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+    function DelData(id) {
+        var MSG = confirm("Are you sure you want to delete this?");
+
+        if (MSG) {
+                    $.ajax({
+                    type: "DELETE",
+                    url: '@Url.Action("DelCity", "Home")',
+                    data: { id: id },
+                    dataType: "text",
+                    cache: false,
+                    success: function (data) {
+                        if (data !== "") {
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            GetData();
+                            Command: toastr["success"]("Data deleted successfully")
+                        }
+                    },
+                    error: function () {
+                        Command: toastr["error"]("Error while deleting data")
+                    }
+                });
+                  }
+
+
+
+    }
+
+</script>

@@ -1,0 +1,161 @@
+﻿@model Foundation.Models.Country
+@{
+    ViewData["Title"] = "Countries";
+    ViewData["PageName"] = "Countries";
+    ViewData["Heading"] = "<i class='subheader-icon fal fa-flag'></i> Countries";
+}
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4">Add Country</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+                <form id="FormData">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" asp-for="cFullName" id="cFullName" name="cFullName">
+                            <span asp-validation-for="cFullName"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Short Name</label>
+                            <input type="text" class="form-control" asp-for="cShortName" id="cShortName" name="cShortName">
+                            <span asp-validation-for="cShortName"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Code</label>
+                            <input type="text" class="form-control" asp-for="cCode" id="cCode" name="cCode">
+                            <span asp-validation-for="cCode"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @{
+                                var list = new List<SelectListItem>();
+                                list.Add(new SelectListItem { Text = "Active", Value = "true" });
+                                list.Add(new SelectListItem { Text = "DeActive", Value = "false" });
+
+                            }
+                            <label class="form-label">Status</label>
+                            <select class="form-control" asp-for="cStatus" id="cStatus" name="cStatus" asp-items="@list" required></select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <button type="button" id="btnSubmit" class="btn btn-outline-primary">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12">
+        <div id="panel-4" class="panel">
+            <div id="Data">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="UpdateModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4">Update Country</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                </button>
+
+            </div>
+
+            <div class="modal-body" id="modelContent">
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/vendors.bundle.js"></script>
+
+<script>
+    $(document).ready(function () {
+        GetData();
+    });
+</script>
+
+<script>
+    $(function () {
+        $("#btnSubmit").click(function () {
+            $("#btnSubmit").html('<i class="fal fa-spinner fa-spin"></i>  Working...');
+            var myData = $("#FormData").serialize();
+            var code = $("#cCode").val();
+            if (code !== "") {
+                $.ajax({
+                    url: "@Url.Action("AddCountry", "Home")",
+                    data: myData,
+                    type: 'post',
+                    dataType: "text",
+                    success: function (data) {
+                        console.log(data);
+                        if (data !== "") {
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            GetData();
+                            $("#FormData").trigger("reset");
+                            //$("#myModal").modal('hide');
+                            Command: toastr["success"]("Data added successfully")
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        Command: toastr["error"]("An error occured.")
+                    }
+
+                });
+            } else {
+                Command: toastr["error"]("Please fill up the fields.")
+            }
+            var procemessage = "Add";
+            $("#btnSubmit").html(procemessage);
+        });
+    });
+</script>
+
+<script>
+    function GetData()
+    {
+        $.ajax({
+            url: "@Url.Action("_CountryData", "Home")",
+            type: "Get",
+            dataType: "html",
+            cache: false,
+            success: function (data) {
+                $("#Data").html(data);
+            }
+        });
+    }
+</script>
+
+<script>
+    function createModal(url) {
+        $('#modelContent').load(url);
+        $('#UpdateModal').modal('show');
+    }
+</script>

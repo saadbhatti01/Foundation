@@ -1,0 +1,182 @@
+﻿@model Foundation.Models.Donation
+@{
+    ViewData["Title"] = "Donation Giver";
+    ViewData["PageName"] = "Giver";
+    ViewData["Heading"] = "Donation Giver";
+}
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4">Add Donation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="FormData">
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Select Type</label>
+                            @Html.DropDownList("dtId", (SelectList)ViewData["Types"], new { @class = "form-control", @required = "required" })
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Select Donor</label>
+                            @Html.DropDownList("perId", (SelectList)ViewData["Donor"], "Anonymous", new { @class = "form-control", @required = "required" })
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Donor Number</label>
+                            <input type="text" asp-for="dNumber" id="dNumber" name="dNumber" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Donation Amount</label>
+                            <input type="text" asp-for="dAmount" id="dAmount" name="dAmount" class="form-control">
+                            <input type="hidden" asp-for="dType" id="dType" name="dType" value="Giver" class="form-control">
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <button type="button" id="btnSubmit" class="btn btn-sm btn-outline-primary">Add Donation</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12">
+        <div id="panel-4" class="panel">
+            <div class="panel-hdr">
+                <h2>
+                    Donation Giver
+                </h2>
+                <div class="panel-toolbar">
+                    <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#myModal"><i class="fal fa-plus-octagon"></i> Add Donations</button>
+                </div>
+            </div>
+            <div class="panel-container show">
+                <div class="panel-content">
+                    <div id="Data">
+
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="UpdateModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4">Update Donation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                </button>
+
+            </div>
+
+            <div class="modal-body" id="modelContent">
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/vendors.bundle.js"></script>
+
+<script>
+    $(document).ready(function () {
+        GetData();
+    });
+</script>
+
+<script>
+    $(function () {
+        $("#btnSubmit").click(function () {
+            $("#btnSubmit").html('<i class="fal fa-spinner fa-spin"></i>  Working...');
+            var myData = $("#FormData").serialize();
+
+                $.ajax({
+                    url: "@Url.Action("AddOperation", "Donations")",
+                    data: myData,
+                    type: 'post',
+                    dataType: "text",
+                    success: function (data) {
+                        console.log(data);
+                        if (data !== "") {
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            GetData();
+                            $("#FormData").trigger("reset");
+                            //$("#myModal").modal('hide');
+                            Command: toastr["success"]("Data added successfully")
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        Command: toastr["error"]("An error occured.")
+                    }
+
+                });
+
+            var procemessage = "Add";
+            $("#btnSubmit").html(procemessage);
+        });
+    });
+</script>
+
+<script>
+    function GetData()
+    {
+        $.ajax({
+            url: "@Url.Action("_GiverData", "Donations")",
+            type: "Get",
+            dataType: "html",
+            cache: false,
+            success: function (data) {
+                $("#Data").html(data);
+            }
+        });
+    }
+</script>
+
+<script>
+    function createModal(url) {
+        $('#modelContent').load(url);
+        $('#UpdateModal').modal('show');
+    }
+</script>
+
+
+<script>
+    $("#perId").change(function () {
+        var perId = $(this).val();
+        if (perId !== "") {
+            $.post("@Url.Action("GetNumber", "Donations")?perId=" + perId, function (res) {
+                if (res === "") {
+                    $("#dNumber").prop('disabled', false).val('');
+                    
+                }
+                else {
+                    $("#dNumber").prop('readonly', true).val(res);
+                }
+            });
+        } else {
+            $("#dNumber").prop('disabled', false).val('');
+        }
+    });
+</script>

@@ -1,0 +1,69 @@
+﻿<table id="dt-basic-example" class="table table-bordered table-hover table-striped w-100">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>CNIC</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (TempData["Users"] != null)
+        {
+            foreach (var i in (List<Foundation.Models.Person>)TempData["Users"])
+            {
+                <tr>
+                    <td>@i.firstName  @i.lastName</td>
+                    <td>@i.code</td>
+                    <td>@i.cnic</td>
+                    <td>@i.email</td>
+                    <td>@i.contactOne</td>
+                    <td>@i.Role.roleName</td>
+                    <td>
+                        @if (i.perStatus == "Active")
+                        {
+                            <span class="badge badge-success badge-pill">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger badge-pill">@i.perStatus</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="d-flex demo">
+                            @*<a onclick="DelData(@i.perId)" style="cursor: pointer" class="btn btn-xs btn-outline-danger btn-icon btn-inline-block mr-1" title="Delete Record"><i class="fal fa-times"></i></a>*@
+                            <a style="cursor: pointer" onclick="createModal('@Url.Action("_UpdateUser", "User", new { id = i.perId})')" class="btn btn-xs btn-outline-primary btn-icon btn-inline-block mr-1" title="Edit"><i class="fal fa-edit"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+<script>
+    function DelData(id) {
+        var MSG = confirm("Are you sure you want to delete this User?");
+
+        if (MSG) {
+            $.ajax({
+            url: "@Url.Action("DeleteUser", "User")",
+            type: "DELETE",
+            data: { id: id },
+            dataType: "text",
+            success: function (data) {
+                GetData();
+                Command: toastr["success"]("Data deleted successfully")
+            },
+            error: function () {
+                    Command: toastr["error"]("Error while deleting data")
+            }
+        });
+        }
+}
+</script>

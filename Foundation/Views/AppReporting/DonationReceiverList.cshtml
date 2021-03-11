@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Donation Receiver List";
+    ViewData["PageName"] = "DonationReceiverList";
+    ViewData["Heading"] = "Donation Receiver List";
+}
+
+<div class="row">
+    <div class="col-xl-12">
+        <div id="panel-1" class="panel">
+            <div class="panel-container show">
+                <div class="panel-content">
+                    <table id="dt-basic-example" class="table table-responsive-lg table-bordered table-hover table-striped w-100">
+                        <thead>
+                            <tr>
+                                <th>Donor Name</th>
+                                <th>Code</th>
+                                <th>CNIC</th>
+                                <th>Email</th>
+                                <th>Contact Number</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var i in (List<Foundation.Models.Person>)TempData["Takers"])
+                            {
+                                <tr>
+                                    <td>@i.firstName  @i.lastName</td>
+                                    <td>@i.code</td>
+                                    <td>@i.cnic</td>
+                                    <td>@i.email</td>
+                                    <td>@i.contactOne</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="Data">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/vendors.bundle.js"></script>
+
+<script>
+    $("#btnShow").click(function () {
+        //GetData();
+    });
+</script>
+
+<script>
+    function GetData()
+    {
+        $("#btnShow").html('<i class="fal fa-spinner fa-spin"></i>  Working...');
+         var fDate = $("#fDate").val();
+         var tDate = $("#tDate").val();
+        $.ajax({
+            url: "@Url.Action("_AccountBalance", "AppReporting")",
+            type: "Get",
+            data: { fDate: fDate, tDate: tDate },
+            dataType: "html",
+            //cache: false,
+            success: function (data) {
+                $("#Data").html(data);
+            }
+        });
+    }
+</script>

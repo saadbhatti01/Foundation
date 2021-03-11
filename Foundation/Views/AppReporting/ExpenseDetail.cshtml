@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Expense Detail";
+    ViewData["PageName"] = "ExpenseDetail";
+    ViewData["Heading"] = "Expense Detail";
+}
+
+<div class="row">
+    <div class="col-xl-12">
+        <div id="panel-1" class="panel">
+            <div class="panel-container show">
+                <div class="panel-content">
+                    <table id="dt-basic-example" class="table table-responsive-lg table-bordered table-hover table-striped w-100">
+                        <tr>
+                            <th>Expense Name</th>
+                            <th>Spend</th>
+                        </tr>
+                        <tr>
+                            <td>Electricity</td>
+                            <td>10,000</td>
+                        </tr>
+                        <tr>
+                            <td>Salary</td>
+                            <td>70,000</td>
+                        </tr>
+                        <tr>
+                            <td>Electricity</td>
+                            <td>13,000</td>
+                        </tr>
+
+                        <tr>
+                            <td>Salary</td>
+                            <td>90,000</td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+            <div id="Data">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/vendors.bundle.js"></script>
+
+<script>
+    $("#btnShow").click(function () {
+        //GetData();
+    });
+</script>
+
+<script>
+    function GetData()
+    {
+        $("#btnShow").html('<i class="fal fa-spinner fa-spin"></i>  Working...');
+         var fDate = $("#fDate").val();
+         var tDate = $("#tDate").val();
+        $.ajax({
+            url: "@Url.Action("_AccountBalance", "AppReporting")",
+            type: "Get",
+            data: { fDate: fDate, tDate: tDate },
+            dataType: "html",
+            //cache: false,
+            success: function (data) {
+                $("#Data").html(data);
+            }
+        });
+    }
+</script>

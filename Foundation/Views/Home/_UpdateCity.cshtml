@@ -1,0 +1,74 @@
+﻿@model Foundation.Models.City
+<form id="UpdateFormData">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Country</label>
+            @Html.DropDownList("cId", (SelectList)ViewData["Countries"], new { @class = "form-control", @required = "required" })
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Name</label>
+            <input type="hidden" class="form-control" asp-for="ctId" name="ctId">
+            <input type="text" class="form-control" asp-for="ctFullName" id="ctFullName" name="ctFullName">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Short Name</label>
+            <input type="text" class="form-control" asp-for="ctShortName" id="ctShortName" name="ctShortName">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Code</label>
+            <input type="text" class="form-control" asp-for="ctCode" id="ctCode" name="ctCode">
+        </div>
+
+        <div class="col-md-6 mb-3">
+            @{
+                var list = new List<SelectListItem>();
+                list.Add(new SelectListItem { Text = "Active", Value = "true" });
+                list.Add(new SelectListItem { Text = "DeActive", Value = "false" });
+
+            }
+            <label class="form-label">Status</label>
+            <select class="form-control" asp-for="ctStatus" id="ctStatus" name="ctStatus" asp-items="@list" required></select>
+        </div>
+        <div class="col-md-12 mb-3">
+            <button type="button" id="btnUpdate" class="btn btn-outline-primary">Update</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $("#btnUpdate").click(function (event) {
+            $("#btnUpdate").html('<i class="fal fa-spinner fa-spin"></i>  Updating...');
+            var myData = $("#UpdateFormData").serialize();
+            //if (cCode !== "") {
+                $.ajax({
+                    url: "@Url.Action("UpdateCity", "Home")",
+                    data: myData,
+                    type: "post",
+                    dataType: "text",
+                    success: function (data) {
+                        if (data !== "") {
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            GetData();
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            $("#UpdateModal").modal("hide");
+                            Command: toastr["success"]("Data Updated successfully")
+                        }
+                    }
+
+                });
+                    //} else {
+                    //    Command: toastr["error"]("Please fill up the fields")
+                    //    var procemessage = "Update";
+                    //    $("#btnUpdate").html(procemessage);
+                    //}
+
+
+        });
+    });
+</script>

@@ -1,0 +1,70 @@
+﻿@model Foundation.Models.Country
+<form id="UpdateFormData">
+    <div class="form-row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Name</label>
+            <input type="hidden" class="form-control" asp-for="cId" name="cId">
+            <input type="text" class="form-control" asp-for="cFullName" id="cFullName" name="cFullName">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Short Name</label>
+            <input type="text" class="form-control" asp-for="cShortName" id="cShortName" name="cShortName">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Code</label>
+            <input type="text" class="form-control" asp-for="cCode" id="Code" name="cCode">
+        </div>
+        <div class="col-md-6 mb-3">
+            @{
+                var list = new List<SelectListItem>();
+                list.Add(new SelectListItem { Text = "Active", Value = "true" });
+                list.Add(new SelectListItem { Text = "DeActive", Value = "false" });
+
+            }
+            <label class="form-label">Status</label>
+            <select class="form-control" asp-for="cStatus" id="cStatus" name="cStatus" asp-items="@list" required></select>
+        </div>
+        <div class="col-md-6 mb-3">
+            <button type="button" id="btnUpdate" class="btn btn-outline-primary">Update</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $("#btnUpdate").click(function (event) {
+            $("#btnUpdate").html('<i class="fal fa-spinner fa-spin"></i>  Updating...');
+            var myData = $("#UpdateFormData").serialize();
+            var cCode = $("#Code").val();
+
+            if (cCode !== "") {
+                $.ajax({
+                    url: "@Url.Action("UpdateCountry", "Home")",
+                    data: myData,
+                    type: "post",
+                    dataType: "text",
+                    success: function (data) {
+                        if (data !== "") {
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            GetData();
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            $("#UpdateModal").modal("hide");
+                            Command: toastr["success"]("Data Updated successfully")
+                        }
+                    }
+
+                });
+                    } else {
+                        Command: toastr["error"]("Please fill up the fields")
+                        var procemessage = "Update";
+                        $("#btnUpdate").html(procemessage);
+                    }
+
+
+        });
+    });
+</script>

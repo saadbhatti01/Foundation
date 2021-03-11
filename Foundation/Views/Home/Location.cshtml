@@ -1,0 +1,213 @@
+﻿@model Foundation.Models.Location
+@{
+    ViewData["Title"] = "Site Office";
+    ViewData["PageName"] = "Location";
+    ViewData["Heading"] = "<i class='subheader-icon fal fa-map-marker'></i> Site Office";
+}
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4">Add Site Office</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+                <form id="FormData">
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Country</label>
+                            @Html.DropDownList("cId", (SelectList)ViewData["Countries"], "--Select Country--", new { @id = "cId", required = "required", @class = "form-control", @onchange = "javascript:GetCity(this.value);" })
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="ageRangeField">Select City</label>
+                            <select id="ctId" name="ctId" asp-for="ctId" class="form-control" required></select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Location Name</label>
+                            <input type="text" asp-for="locName" id="name" name="locName" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Contact One</label>
+                            <input type="text" asp-for="locContactOne" id="locContactOne" name="locContactOne" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Contact Two</label>
+                            <input type="text" asp-for="locContactTwo" id="locContactTwo" name="locContactTwo" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Fax</label>
+                            <input type="text" asp-for="locFax" id="locFax" name="locFax" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Postal Code</label>
+                            <input type="text" asp-for="PostalCode" id="code" name="PostalCode" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            @{
+                                var list = new List<SelectListItem>();
+                                list.Add(new SelectListItem { Text = "Active", Value = "true" });
+                                list.Add(new SelectListItem { Text = "DeActive", Value = "false" });
+
+                            }
+                            <label class="form-label">Status</label>
+                            <select class="form-control" asp-for="locStatus" id="locStatus" name="locStatus" asp-items="@list" required></select>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <button type="button" id="btnSubmit" class="btn btn-outline-primary">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12">
+        <div id="panel-1" class="panel">
+            <div id="Data">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="UpdateModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title h4">Update Site Office</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                </button>
+
+            </div>
+
+            <div class="modal-body" id="modelContent">
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/vendors.bundle.js"></script>
+
+<script language="javascript" type="text/javascript">
+
+    function GetCity(_Id) {
+
+        if (_Id > 0) {
+            var procemessage = "<option value='0'> Please wait...</option>";
+            $("#ctId").html(procemessage).show();
+            var url = "/Home/PopulateCities/";
+
+            $.ajax({
+                url: url,
+                data: { id: _Id },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    console.log(data);
+                    if (data.length == 0) {
+                        var markup = "<option value= 'null'>No Record Found</option>";
+                    } else {
+                        var markup = "<option value=''>--Select City--</option>";
+                    }
+
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].value + ">" + data[x].text + "</option>";
+                    }
+                    $("#ctId").html(markup);
+                },
+                error: function (reponse) {
+                    alert("Whooaaa! Something went wrong..");
+                }
+            });
+        } else {
+            var markup = "<option value=' '>---Select City---</option>";
+            $("#ctId").html(markup).show();
+        }
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        GetData();
+    });
+</script>
+
+<script>
+    $(function () {
+        $("#btnSubmit").click(function () {
+            $("#btnSubmit").html('<i class="fal fa-spinner fa-spin"></i>  Working...');
+            var myData = $("#FormData").serialize();
+            var country = $("#cId").val();
+            var city = $("#ctId").val();
+            var name = $("#name").val();
+            var code = $("#code").val();
+            if (code !== "" && name !== "" && city !== "" && country !== "") {
+                $.ajax({
+                    url: "@Url.Action("AddLocation", "Home")",
+                    data: myData,
+                    type: 'post',
+                    dataType: "text",
+                    success: function (data) {
+                        console.log(data);
+                        if (data !== "") {
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            GetData();
+                            $("#FormData").trigger("reset");
+                            //$("#myModal").modal("hide");
+                            Command: toastr["success"]("Data added successfully")
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        Command: toastr["error"]("An error occured.")
+                    }
+
+                });
+            } else {
+                Command: toastr["error"]("Please fill up the fields.")
+            }
+            var procemessage = "Add";
+            $("#btnSubmit").html(procemessage);
+        });
+    });
+</script>
+
+<script>
+    function GetData()
+    {
+        $.ajax({
+            url: "@Url.Action("_LocationData", "Home")",
+            type: "Get",
+            dataType: "html",
+            cache: false,
+            success: function (data) {
+                $("#Data").html(data);
+            }
+        });
+    }
+</script>
+
+<script>
+    function createModal(url) {
+        $('#modelContent').load(url);
+        $('#UpdateModal').modal('show');
+    }
+</script>

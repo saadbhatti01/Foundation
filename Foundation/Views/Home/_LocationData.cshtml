@@ -1,0 +1,100 @@
+﻿<div class="panel-hdr">
+    <h2>
+        Location Data
+    </h2>
+    <div class="panel-toolbar">
+        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#myModal"><i class="fal fa-plus-octagon"></i> Add Location</button>
+    </div>
+</div>
+<div class="panel-container show">
+    <div class="panel-content">
+        @*<div class="panel-tag">
+                This example shows DataTables and the Responsive extension being used with the Bootstrap framework providing the styling. The DataTables / Bootstrap integration provides seamless integration for DataTables to be used in a Bootstrap page. <strong>Note</strong> that the <code>.dt-responsive</code> class is used to indicate to the extension that it should be enabled on this page, as responsive has special meaning in Bootstrap. The responsive option could also be used if required
+            </div>*@
+        <!-- datatable start -->
+        @if (TempData["Location"] != null)
+        {
+            <table id="dt-basic-example" class="table table-responsive-lg table-bordered table-hover table-striped w-100">
+                <thead>
+                    <tr>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Location</th>
+                        <th>Contact One</th>
+                        <th>Contact Two</th>
+                        <th>Fax</th>
+                        <th>Postal Code</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var i in (List<Foundation.Models.Location>)TempData["Location"])
+                    {
+                        <tr>
+                            <td>@i.Country.cFullName</td>
+                            <td>@i.City.ctFullName</td>
+                            <td>@i.locName</td>
+                            <td>@i.locContactOne</td>
+                            <td>@i.locContactTwo</td>
+                            <td>@i.locFax</td>
+                            <td>@i.PostalCode</td>
+                            <td>
+                                @if (i.locStatus == true)
+                                {
+                                    <span class="badge badge-success badge-pill">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger badge-pill">DeActive</span>
+                                }
+
+                            </td>
+                            <td>
+                                <div class="d-flex demo">
+                                    <a onclick="DelData(@i.locId)" style="cursor: pointer" class="btn btn-sm btn-outline-danger btn-icon btn-inline-block mr-1" title="Delete Record"><i class="fal fa-times"></i></a>
+                                    <a style="cursor: pointer" onclick="createModal('@Url.Action("_UpdateLocation", "Home", new { id = i.locId})')" class="btn btn-sm btn-outline-primary btn-icon btn-inline-block mr-1" title="Edit"><i class="fal fa-edit"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+
+        <!-- datatable end -->
+    </div>
+</div>
+
+
+<script>
+    function DelData(id) {
+        var MSG = confirm("Are you sure you want to delete this?");
+
+        if (MSG) {
+                    $.ajax({
+                    type: "DELETE",
+                    url: '@Url.Action("DelLocation", "Home")',
+                    data: { id: id },
+                    dataType: "text",
+                    cache: false,
+                    success: function (data) {
+                        if (data !== "") {
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            GetData();
+                            Command: toastr["success"]("Data deleted successfully")
+                        }
+                    },
+                    error: function () {
+                        Command: toastr["error"]("Error while deleting data")
+                    }
+                });
+                  }
+
+
+
+    }
+
+</script>

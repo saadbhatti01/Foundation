@@ -1,0 +1,170 @@
+﻿@model Foundation.Models.Person
+<form id="UpdateFormData">
+    <div class="form-row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">First Name</label>
+            <input type="hidden" asp-for="perId" name="perId">
+            <input type="hidden" class="form-control" asp-for="cId" name="countryId" id="countryId">
+            <input type="hidden" class="form-control" asp-for="ctId" name="cityId" id="cityId">
+            <input type="text" asp-for="firstName" name="firstName" id="fName" class="form-control">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Last Name</label>
+            <input type="text" asp-for="lastName" name="lastName" class="form-control">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">CNIC</label>
+            <input type="text" asp-for="cnic" name="cnic" id="cnic" class="form-control">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">User Code</label>
+            <input type="text" asp-for="code" name="code" id="code" class="form-control">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Contact Number One</label>
+            <input type="text" asp-for="contactOne" name="contactOne" id="cNum" class="form-control">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Contact Number Two</label>
+            <input type="text" asp-for="contactTwo" name="contactTwo" id="cNum1" class="form-control">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" asp-for="email" name="email" id="email" class="form-control">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Role</label>
+            @Html.DropDownList("roleId", (SelectList)ViewData["Roles"], "--Select User Role--", new { @id = "roleId", required = "required", @class = "form-control" })
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Address</label>
+        <input type="text" asp-for="addressOne" name="addressOne" id="uaddress" class="form-control" placeholder="Address One">
+    </div>
+   
+    <div class="form-row form-group">
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Country</label>
+            @Html.DropDownList("cId", (SelectList)ViewData["Countries"], "--Select Country--", new { @id = "cId", required = "required", @class = "form-control", @onchange = "javascript:GetUpdateCity(this.value);" })
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="ageRangeField">Select City</label>
+            <select id="uctId" name="ctId" asp-for="ctId" class="form-control" required></select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Post Code</label>
+            <input type="text" asp-for="postalCode" name="postalCode" id="upCode" class="form-control">
+        </div>
+        <div class="col-md-3 mb-3">
+            @{
+                var list = new List<SelectListItem>();
+                list.Add(new SelectListItem { Text = "Active", Value = "Active" });
+                list.Add(new SelectListItem { Text = "Blocked", Value = "Blocked" });
+            }
+            <label class="form-label">Status</label>
+            <select class="form-control" asp-for="perStatus" name="perStatus" asp-items="@list" required></select>
+        </div>
+
+        <div class="col-md-12 mb-3">
+            <button type="button" id="btnUpdate" class="btn btn-outline-primary">Update</button>
+        </div>
+
+    </div>
+
+</form>
+
+<script>
+    $(function () {
+        $("#btnUpdate").click(function (event) {
+            $("#btnUpdate").html('<i class="fal fa-spinner fa-spin"></i>  Updating...');
+            var myData = $("#UpdateFormData").serialize();
+            var cCode = $("#ucode").val();
+
+            if (cCode !== "") {
+                $.ajax({
+                    url: "@Url.Action("UpdateUser", "User")",
+                    data: myData,
+                    type: "post",
+                    dataType: "text",
+                    success: function (data) {
+                        if (data !== "") {
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            GetData();
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            $("#UpdateModal").modal("hide");
+                            Command: toastr["success"]("Data Updated successfully")
+                        }
+                    }
+
+                });
+                    } else {
+                        Command: toastr["error"]("Please fill up the fields")
+                        var procemessage = "Update";
+                        $("#btnUpdate").html(procemessage);
+                    }
+
+
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        var cId = $("#countryId").val();
+        if (cId !== "") {
+            GetUpdateCity(cId);
+        }
+    });
+</script>
+
+ <script language="javascript" type="text/javascript">
+
+    function GetUpdateCity(_Id) {
+
+        if (_Id > 0) {
+            var procemessage = "<option value='0'> Please wait...</option>";
+            $("#uctId").html(procemessage).show();
+            var url = "/Home/PopulateCities/";
+
+            $.ajax({
+                url: url,
+                data: { id: _Id },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    console.log(data);
+                    if (data.length == 0) {
+                        var markup = "<option value= 'null'>No Record Found</option>";
+                    } else {
+                        var markup = "<option value=''>--Select City--</option>";
+                    }
+
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].value + ">" + data[x].text + "</option>";
+                    }
+                    $("#uctId").html(markup);
+
+                    var cityId = $("#cityId").val();
+                    $("[id*=uctId] option").each(function () {
+                        if ($(this).val() == cityId) {
+                            $(this).attr('selected', 'selected');
+                        }
+                    });
+                },
+                error: function (reponse) {
+                    alert("Whooaaa! Something went wrong..");
+                }
+            });
+        } else {
+            var markup = "<option value=' '>---Select City---</option>";
+            $("#uctId").html(markup).show();
+        }
+    }
+</script>

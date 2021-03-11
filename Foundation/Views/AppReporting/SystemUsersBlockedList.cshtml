@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "System Blocked User List";
+    ViewData["PageName"] = "SystemUsersBlockedList";
+    ViewData["Heading"] = "System Blocked User List";
+}
+
+<div class="row">
+    <div class="col-xl-12">
+        <div id="panel-1" class="panel">
+            <div class="panel-container show">
+                <div class="panel-content">
+                    <table id="dt-basic-example" class="table table-responsive-lg table-bordered table-hover table-striped w-100">
+                        <tr>
+                            <th>User Name</th>
+                            <th>User Role</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>Sajawal</td>
+                            <td>Admin</td>
+                            <td>Blocked</td>
+                        </tr>
+                        <tr>
+                            <td>Kashif</td>
+                            <td>Admin</td>
+                            <td>Blocked</td>
+                        </tr>
+                        <tr>
+                            <td>Asif</td>
+                            <td>Data Entery Operator</td>
+                            <td>Blocked</td>
+                        </tr>
+                        <tr>
+                            <td>Arsalan</td>
+                            <td>Data Entery Operator</td>
+                            <td>Blocked</td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+            <div id="Data">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/vendors.bundle.js"></script>
+
+<script>
+    $("#btnShow").click(function () {
+        //GetData();
+    });
+</script>
+
+<script>
+    function GetData()
+    {
+        $("#btnShow").html('<i class="fal fa-spinner fa-spin"></i>  Working...');
+         var fDate = $("#fDate").val();
+         var tDate = $("#tDate").val();
+        $.ajax({
+            url: "@Url.Action("_AccountBalance", "AppReporting")",
+            type: "Get",
+            data: { fDate: fDate, tDate: tDate },
+            dataType: "html",
+            //cache: false,
+            success: function (data) {
+                $("#Data").html(data);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,146 @@
+﻿@model Foundation.Models.Location
+<form id="UpdateFormData">
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Country</label>
+            @Html.DropDownList("cId", (SelectList)ViewData["Countries"], "--Select Country--", new { @id = "cId", required = "required", @class = "form-control", @onchange = "javascript:GetUpdateCity(this.value);" })
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">City</label>
+            <select id="uctId" name="ctId" asp-for="ctId" class="form-control" required></select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Name</label>
+            <input type="hidden" class="form-control" asp-for="locId" name="locId">
+            <input type="hidden" class="form-control" asp-for="cId" id="countryId">
+            <input type="hidden" class="form-control" asp-for="ctId" id="cityId">
+
+            <input type="text" class="form-control" asp-for="locName" id="locName" name="locName">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Contact One</label>
+            <input type="text" asp-for="locContactOne" id="locContactOne" name="locContactOne" class="form-control">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Contact Two</label>
+            <input type="text" asp-for="locContactTwo" id="locContactTwo" name="locContactTwo" class="form-control">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Fax</label>
+            <input type="text" asp-for="locFax" id="locFax" name="locFax" class="form-control">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Postal Code</label>
+            <input type="text" class="form-control" asp-for="PostalCode" id="PostalCode" name="PostalCode">
+        </div>
+
+        <div class="col-md-6 mb-3">
+            @{
+                var list = new List<SelectListItem>();
+                list.Add(new SelectListItem { Text = "Active", Value = "true" });
+                list.Add(new SelectListItem { Text = "DeActive", Value = "false" });
+
+            }
+            <label class="form-label">Status</label>
+            <select class="form-control" asp-for="locStatus" id="locStatus" name="locStatus" asp-items="@list" required></select>
+        </div>
+        <div class="col-md-12 mb-3">
+            <button type="button" id="btnUpdate" class="btn btn-outline-primary">Update</button>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    $(function () {
+        $("#btnUpdate").click(function (event) {
+            $("#btnUpdate").html('<i class="fal fa-spinner fa-spin"></i>  Updating...');
+            var myData = $("#UpdateFormData").serialize();
+            var cCode = $("#Code").val();
+
+            if (cCode !== "") {
+                $.ajax({
+                    url: "@Url.Action("UpdateLocation", "Home")",
+                    data: myData,
+                    type: "post",
+                    dataType: "text",
+                    success: function (data) {
+                        if (data !== "") {
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            Command: toastr["error"]("" + data + "")
+                        } else {
+                            GetData();
+                            var procemessage = "Update";
+                            $("#btnUpdate").html(procemessage);
+                            $("#UpdateModal").modal("hide");
+                            Command: toastr["success"]("Data Updated successfully")
+                        }
+                    }
+
+                });
+                    } else {
+                        Command: toastr["error"]("Please fill up the fields")
+                        var procemessage = "Update";
+                        $("#btnUpdate").html(procemessage);
+                    }
+
+
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var cId = $("#countryId").val();
+        if (cId !== "") {
+            GetUpdateCity(cId);
+        }
+    });
+</script>
+
+<script language="javascript" type="text/javascript">
+
+    function GetUpdateCity(_Id) {
+
+        if (_Id > 0) {
+            var procemessage = "<option value='0'> Please wait...</option>";
+            $("#uctId").html(procemessage).show();
+            var url = "/Home/PopulatCity/";
+
+            $.ajax({
+                url: url,
+                data: { id: _Id },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    console.log(data);
+                    if (data.length == 0) {
+                        var markup = "<option value= 'null'>No Record Found</option>";
+                    } else {
+                        var markup = "<option value=''>--Select City--</option>";
+                    }
+
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].value + ">" + data[x].text + "</option>";
+                    }
+                    $("#uctId").html(markup);
+
+                    var cityId = $("#cityId").val();
+                    $("[id*=uctId] option").each(function () {
+                        if ($(this).val() == cityId) {
+                            $(this).attr('selected', 'selected');
+                        }
+                    });
+                },
+                error: function (reponse) {
+                    alert("Whooaaa! Something went wrong..");
+                }
+            });
+        } else {
+            var markup = "<option value=' '>---Select City---</option>";
+            $("#uctId").html(markup).show();
+        }
+    }
+</script>

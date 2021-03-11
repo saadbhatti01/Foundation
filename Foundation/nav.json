@@ -1,0 +1,134 @@
+{
+  "version": 4,
+  "lists": [
+    {
+      "title": "Admin",
+      "icon": "fal fa-user",
+      "items": [
+        {
+          "title": "Country",
+          "showOnSeed": true,
+          "href": "/Home/Countries"
+        },
+        {
+          "title": "Cities",
+          "showOnSeed": true,
+          "href": "/Home/Cities"
+        },
+        {
+          "title": "Site Office",
+          "showOnSeed": true,
+          "href": "/Home/Location"
+        },
+        {
+          "title": "Donation Type",
+          "showOnSeed": true,
+          "href": "/Home/DonationType"
+        },
+        {
+          "title": "Person Registration",
+          "showOnSeed": true,
+          "href": "/User/Registration"
+        }
+      ]
+    },
+    {
+      "title": "Donations",
+      "icon": "fal fa-users",
+      "items": [
+        {
+          "title": "Donor",
+          "showOnSeed": true,
+          "href": "/Donations/Giver"
+        },
+        {
+          "title": "Donation Taker",
+          "showOnSeed": true,
+          "href": "/Donations/Taker"
+        }
+      ]
+    },
+    {
+      "title": "Reporting",
+      "icon": "fal fa-file",
+      "items": [
+        {
+          "title": "Account Balance",
+          "showOnSeed": true,
+          "href": "/AppReporting/AccountBalance"
+        },
+        {
+          "title": "Account Ledger",
+          "showOnSeed": true,
+          "href": "/AppReporting/AccountLedger"
+        },
+        {
+          "title": "Donor List",
+          "showOnSeed": true,
+          "href": "/AppReporting/DonorList"
+        },
+        {
+          "title": "Donation List",
+          "showOnSeed": true,
+          "href": "/AppReporting/DonationList"
+        },
+        {
+          "title": "Donation Receiver List",
+          "showOnSeed": true,
+          "href": "/AppReporting/DonationReceiverList"
+        },
+        {
+          "title": "Donation Receiver Detail",
+          "showOnSeed": true,
+          "href": "/AppReporting/DonationReceiverDetail"
+        },
+        {
+          "title": "Donor and Receiver Detail",
+          "showOnSeed": true,
+          "href": "/AppReporting/DonorandReceiverList"
+        },
+
+        {
+          "title": "System Users Received Donation",
+          "showOnSeed": true,
+          "href": "/AppReporting/SystemUsersReceivedDonation"
+        },
+        {
+          "title": "System Users Distribute Donation",
+          "showOnSeed": true,
+          "href": "/AppReporting/SystemUsersDistributeDonation"
+        },
+        {
+          "title": "System User List",
+          "showOnSeed": true,
+          "href": "/AppReporting/SystemUsersList"
+        },
+        {
+          "title": "System Active User List",
+          "showOnSeed": true,
+          "href": "/AppReporting/SystemUsersActiveList"
+        },
+        {
+          "title": "System Blocked User List",
+          "showOnSeed": true,
+          "href": "/AppReporting/SystemUsersBlockedList"
+        },
+        {
+          "title": "System User Logins",
+          "showOnSeed": true,
+          "href": "/AppReporting/SystemLoginsList"
+        },
+        {
+          "title": "Expense List",
+          "showOnSeed": true,
+          "href": "/AppReporting/ExpenseList"
+        },
+        {
+          "title": "Expense Detail",
+          "showOnSeed": true,
+          "href": "/AppReporting/ExpenseDetail"
+        }
+      ]
+    }
+  ]
+}

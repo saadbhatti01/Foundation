@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Account Ledger";
+    ViewData["PageName"] = "AccountLedger";
+    ViewData["Heading"] = "Account Ledger";
+}
+
+<div class="row">
+    <div class="col-xl-12">
+        <div id="panel-1" class="panel">
+            <div class="panel-container show">
+                <div class="panel-content">
+                    <form>
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Select Type</label>
+                                @Html.DropDownList("dtId", (SelectList)ViewData["Types"], "All", new { @class = "form-control", @required = "required" })
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="ageRangeField">From Date</label>
+                                <input type="date" class="form-control date-picker" id="fDate" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="ageRangeField">To Date</label>
+                                <input type="date" class="form-control date-picker" id="tDate" />
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <button type="button" id="btnShow" class="btn btn-outline-primary">Show</button>
+                            </div>
+                        </div>
+                    </form>
+
+
+
+                </div>
+            </div>
+            <div id="Data">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/vendors.bundle.js"></script>
+
+<script>
+    $("#btnShow").click(function () {
+        GetData();
+    });
+</script>
+
+<script>
+    function GetData()
+    {
+        $("#btnShow").html('<i class="fal fa-spinner fa-spin"></i>  Working...');
+        var dtId = $("#dtId").val();
+         var fDate = $("#fDate").val();
+         var tDate = $("#tDate").val();
+        $.ajax({
+            url: "@Url.Action("_AccountLedger", "AppReporting")",
+            type: "Get",
+            data: { dtId: dtId, fDate: fDate, tDate: tDate },
+            dataType: "html",
+            //cache: false,
+            success: function (data) {
+                $("#Data").html(data);
+                $("#btnShow").html('Show');
+            }
+        });
+    }
+</script>
