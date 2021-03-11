@@ -71,7 +71,7 @@ namespace Foundation.Controllers
                 TempData["Countries"] = getData;
                 return PartialView();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Content("An error occured during getting the request. Please try again later");
             }
@@ -342,7 +342,7 @@ namespace Foundation.Controllers
                 TempData["Cities"] = getData;
                 return PartialView();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Content("An error occured during getting the request. Please try again later");
             }
@@ -484,7 +484,7 @@ namespace Foundation.Controllers
                 TempData["Location"] = getData;
                 return PartialView();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Content("An error occured during getting the request. Please try again later");
             }
