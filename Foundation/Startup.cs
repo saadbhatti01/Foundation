@@ -30,9 +30,8 @@ namespace Foundation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //var FoundationDB = "Server= .; Database= Foundation;Trusted_Connection= True; MultipleActiveResultSets= True";
-            var FoundationDB = "Data Source=SQL5085.site4now.net;Initial Catalog=DB_A57897_found;User Id=DB_A57897_found_admin;Password=Nopassword0";
-
+            var FoundationDB = "Server= .; Database= Foundation;Trusted_Connection= True; MultipleActiveResultSets= True";
+            
             services.AddDbContext<DBCon>(options => options.UseSqlServer(FoundationDB));
             services.AddDbContext<DBCon>(options => options.UseSqlServer(Configuration.GetConnectionString("DBCon")));
 
